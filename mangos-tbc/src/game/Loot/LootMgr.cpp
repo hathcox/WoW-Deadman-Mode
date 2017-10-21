@@ -1773,6 +1773,10 @@ Loot::Loot(Player* player, Corpse* corpse, LootType type) :
 		////100X in WoW DMM
   //      m_gold = (uint32)(urand(50, 150) * 0.016f * pow(((float)pLevel) / 5.76f, 2.5f) * sWorld.getConfig(CONFIG_FLOAT_RATE_DROP_MONEY) * 100);
   //  }
+
+  // Only the person who got the kill can loot
+	SetGroupLootRight(player);
+
     m_ownerSet.insert(player->GetObjectGuid());
     m_lootMethod = NOT_GROUP_TYPE_LOOT;
     m_clientLootType = CLIENT_LOOT_CORPSE;

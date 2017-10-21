@@ -87,6 +87,14 @@ bool Bag::Create(uint32 guidlow, uint32 itemid, Player const* owner)
     return true;
 }
 
+void Bag::RemoveAllItems()
+{
+	for (int i = 0; i < MAX_BAG_SIZE; ++i)
+		if (m_bagslot[i])
+			m_bagslot[i]->DeleteFromDB();
+}
+
+
 void Bag::SaveToDB()
 {
     Item::SaveToDB();
