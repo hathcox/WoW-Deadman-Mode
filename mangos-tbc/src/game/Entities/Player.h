@@ -2204,6 +2204,8 @@ class Player : public Unit
             }
         }
 
+		Item* m_items[PLAYER_SLOTS_COUNT];
+
     protected:
         /*********************************************************/
         /***               BATTLEGROUND SYSTEM                 ***/
@@ -2305,7 +2307,6 @@ class Player : public Unit
 
         uint32 m_atLoginFlags;
 
-        Item* m_items[PLAYER_SLOTS_COUNT];
         uint32 m_currentBuybackSlot;
 
         std::vector<Item*> m_itemUpdateQueue;

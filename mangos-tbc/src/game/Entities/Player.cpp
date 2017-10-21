@@ -4461,6 +4461,9 @@ void Player::KillPlayer()
 
     // update visibility
     UpdateObjectVisibility();
+
+	//Set ourselfs to skinable, this is how we make insignia pop up
+	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 }
 
 Corpse* Player::CreateCorpse()
@@ -4469,7 +4472,7 @@ Corpse* Player::CreateCorpse()
     SpawnCorpseBones();
 
     Corpse* corpse = new Corpse((m_ExtraFlags & PLAYER_EXTRA_PVP_DEATH) ? CORPSE_RESURRECTABLE_PVP : CORPSE_RESURRECTABLE_PVE);
-    SetPvPDeath(false);
+	SetPvPDeath(false);
 
     if (!corpse->Create(sObjectMgr.GenerateCorpseLowGuid(), this))
     {
@@ -4497,8 +4500,9 @@ Corpse* Player::CreateCorpse()
         flags |= CORPSE_FLAG_HIDE_HELM;
     if (HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK))
         flags |= CORPSE_FLAG_HIDE_CLOAK;
-    if (InBattleGround() && !InArena())
-        flags |= CORPSE_FLAG_LOOTABLE;                      // to be able to remove insignia
+	
+	//All corpses are lootable in WoW Dmm
+	flags |= CORPSE_FLAG_LOOTABLE;                      // to be able to remove insignia
     corpse->SetUInt32Value(CORPSE_FIELD_FLAGS, flags);
 
     corpse->SetUInt32Value(CORPSE_FIELD_DISPLAY_ID, GetNativeDisplayId());
@@ -4520,9 +4524,8 @@ Corpse* Player::CreateCorpse()
         }
     }
 
-    // we not need saved corpses for BG/arenas
-    if (!GetMap()->IsBattleGroundOrArena())
-        corpse->SaveToDB();
+	//In WoW DMM, all corpses are lootable!
+	corpse->SaveToDB();
 
     // register for player, but not show
     sObjectAccessor.AddCorpse(corpse);
@@ -7634,8 +7637,6 @@ bool Player::CheckAmmoCompatibility(const ItemPrototype* ammo_proto) const
     Called by remove insignia spell effect    */
 void Player::RemovedInsignia(Player* looterPlr)
 {
-    if (!GetBattleGroundId())
-        return;
 
     // If not released spirit, do it !
     if (m_deathTimer > 0)
@@ -7643,6 +7644,7 @@ void Player::RemovedInsignia(Player* looterPlr)
         m_deathTimer = 0;
         BuildPlayerRepop();
         RepopAtGraveyard();
+		ResurrectPlayer(.5f);
     }
 
     Corpse* corpse = GetCorpse();
@@ -7654,6 +7656,7 @@ void Player::RemovedInsignia(Player* looterPlr)
     Corpse* bones = sObjectAccessor.ConvertCorpseForPlayer(GetObjectGuid(), true);
     if (!bones)
         return;
+
 
     // Now we must make bones lootable, and send player loot
     bones->SetFlag(CORPSE_FIELD_DYNAMIC_FLAGS, CORPSE_DYNFLAG_LOOTABLE);
@@ -7673,6 +7676,42 @@ void Player::RemovedInsignia(Player* looterPlr)
             loot = new Loot(looterPlr, bones, LOOT_INSIGNIA);
         }
     }
+
+	//Loop over everything the player is wearing, 
+	// add it to the loot, and remove it from the player
+	uint32 itemId;
+	for (int i = 0; i < INVENTORY_SLOT_ITEM_END; ++i)
+	{
+		if (Item* pItem = GetItemByPos(INVENTORY_SLOT_BAG_0, i))
+		{
+			itemId = pItem->GetProto()->ItemId;
+			loot->AddItem(itemId, 1, 0, 0);
+			RemoveItem(INVENTORY_SLOT_BAG_0, i, true);
+		}
+	}
+
+	//Loop over all the bags, and add these items to the loot window
+	uint32 bagItemId;
+	for (int i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
+	{
+		if (Bag* pBag = (Bag*)GetItemByPos(INVENTORY_SLOT_BAG_0, i)) 
+		{
+			for (uint32 j = 0; j < pBag->GetBagSize(); ++j) 
+			{
+				if (Item* pItem = GetItemByPos(i, j))
+				{
+					bagItemId = pItem->GetProto()->ItemId;
+					loot->AddItem(bagItemId, pItem->GetCount(), 0, 0);
+					RemoveItem(i, j, true);
+				}
+			}
+		}
+	}
+
+	//Add all of this players gold to the loot window, and remove it from them
+	loot->SetGoldAmount(GetMoney());
+	SetMoney(0);
+	SaveInventoryAndGoldToDB();
 
     loot->ShowContentTo(looterPlr);
 }

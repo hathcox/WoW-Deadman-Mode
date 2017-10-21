@@ -1752,27 +1752,31 @@ Loot::Loot(Player* player, Corpse* corpse, LootType type) :
     m_lootTarget = corpse;
     m_guidTarget = corpse->GetObjectGuid();
 
-    if (type != LOOT_INSIGNIA || corpse->GetType() == CORPSE_BONES)
-        return;
+    //if (type != LOOT_INSIGNIA || corpse->GetType() == CORPSE_BONES)
+    //    return;
 
-    if (!corpse->lootForBody)
-    {
-        corpse->lootForBody = true;
-        uint32 pLevel;
-        if (Player* plr = sObjectAccessor.FindPlayer(corpse->GetOwnerGuid()))
-            pLevel = plr->getLevel();
-        else
-            pLevel = player->getLevel(); // TODO:: not correct, need to save real player level in the corpse data in case of logout
+  //  if (!corpse->lootForBody)
+  //  {
+  //      corpse->lootForBody = true;
+  //      uint32 pLevel;
+		//Player* plr;
+  //      if (plr = sObjectAccessor.FindPlayer(corpse->GetOwnerGuid()))
+  //          pLevel = plr->getLevel();
+  //      //else
+  //      //    pLevel = player->getLevel(); // TODO:: not correct, need to save real player level in the corpse data in case of logout
 
-        if (player->GetBattleGround()->GetTypeID() == BATTLEGROUND_AV)
-            FillLoot(0, LootTemplates_Creature, player, false);
-        // It may need a better formula
-        // Now it works like this: lvl10: ~6copper, lvl70: ~9silver
-        m_gold = (uint32)(urand(50, 150) * 0.016f * pow(((float)pLevel) / 5.76f, 2.5f) * sWorld.getConfig(CONFIG_FLOAT_RATE_DROP_MONEY));
-    }
+  //      //if (player->GetBattleGround()->GetTypeID() == BATTLEGROUND_AV)
+  //      //FillLoot(0, LootTemplates_Creature, player, false);
+
+  //      // It may need a better formula
+  //      // Now it works like this: lvl10: ~6copper, lvl70: ~9silver
+		////100X in WoW DMM
+  //      m_gold = (uint32)(urand(50, 150) * 0.016f * pow(((float)pLevel) / 5.76f, 2.5f) * sWorld.getConfig(CONFIG_FLOAT_RATE_DROP_MONEY) * 100);
+  //  }
     m_ownerSet.insert(player->GetObjectGuid());
     m_lootMethod = NOT_GROUP_TYPE_LOOT;
     m_clientLootType = CLIENT_LOOT_CORPSE;
+
     return;
 }
 
@@ -2053,8 +2057,9 @@ void Loot::Clear()
 // only used from explicitly loaded loot
 void Loot::SetGoldAmount(uint32 _gold)
 {
-    if (m_lootType == LOOT_SKINNING)
-        m_gold = _gold;
+	//TODO: WHY WAS THIS HERE??????
+    //if (m_lootType == LOOT_SKINNING)
+    m_gold = _gold;
 }
 
 void Loot::SendGold(Player* player)
