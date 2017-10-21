@@ -1,4 +1,19 @@
-# C(ontinued)-MaNGOS -- README
+# Wow - Deadman Mode!!
+
+This project is the first of its kind!
+
+Built ontop of the latest Cmangos.
+
+We are implementing Runescape's Deadman mode experience ontop of the World of Warcraft Universe!
+
+#HypeASaurusRex
+
+#BlizzBeChillPlz
+
+
+
+
+
 [![Build Status](https://travis-ci.org/cmangos/mangos-tbc.svg?branch=master)](https://travis-ci.org/cmangos/mangos-tbc) [![Windows Build status](https://ci.appveyor.com/api/projects/status/github/cmangos/mangos-tbc?branch=master&svg=true)](https://ci.appveyor.com/project/cmangos/mangos-tbc/branch/master)
 
 This file is part of the CMaNGOS Project. See [AUTHORS](AUTHORS.md) file for Copyright information
