@@ -140,7 +140,7 @@ class MapManager : public MaNGOS::Singleton<MapManager, MaNGOS::ClassLevelLockab
 		typedef std::map<uint32, uint32> InstanceMap;
 		InstanceMap m_InstanceMap;
 
-		Map* MapManager::CreateInstance(uint32 id, Player* player, uint32 instanceId, bool isCreated);
+		Map* CreateInstance(uint32 id, Player* player, uint32 instanceId, bool isCreated);
 
         uint32 GenerateInstanceId() { return ++i_MaxInstanceId; }
         void InitMaxInstanceId();
