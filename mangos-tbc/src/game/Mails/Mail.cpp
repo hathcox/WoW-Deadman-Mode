@@ -291,14 +291,18 @@ void MailDraft::SendMailTo(MailReceiver const& receiver, MailSender const& sende
     }
 
     uint32 mailId = sObjectMgr.GenerateMailID();
+	//Speeding this up on WoW DMM
+	deliver_delay = 0;
 
     time_t deliver_time = time(nullptr) + deliver_delay;
 
     // expire time if COD 3 days, if no COD 30 days, if auction sale pending 1 hour
     uint32 expire_delay;
     // auction mail without any items and money (auction sale note) pending 1 hour
-    if (sender.GetMailMessageType() == MAIL_AUCTION && m_items.empty() && !m_money)
-        expire_delay = HOUR;
+	if (sender.GetMailMessageType() == MAIL_AUCTION && m_items.empty() && !m_money)
+	{
+		expire_delay = HOUR;
+	}
     // mail from battlemaster (rewardmarks) should last only one day
     else if (sender.GetMailMessageType() == MAIL_CREATURE && sBattleGroundMgr.GetBattleMasterBG(sender.GetSenderId()) != BATTLEGROUND_TYPE_NONE)
         expire_delay = DAY;

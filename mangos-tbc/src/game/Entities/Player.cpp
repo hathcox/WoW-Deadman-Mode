@@ -4333,15 +4333,7 @@ void Player::BuildPlayerRepop()
         sLog.outError("BuildPlayerRepop: player %s(%d) already has a corpse", GetName(), GetGUIDLow());
         MANGOS_ASSERT(false);
     }
-
-    // create a corpse and place it at the player's location
-    Corpse* corpse = CreateCorpse();
-    if (!corpse)
-    {
-        sLog.outError("Error creating corpse for Player %s [%u]", GetName(), GetGUIDLow());
-        return;
-    }
-    GetMap()->Add(corpse);
+	Corpse* corpse = CreateCorpseForPlayer();
 
     // convert player body to ghost
     SetHealth(1);
@@ -4362,6 +4354,19 @@ void Player::BuildPlayerRepop()
 
     // set and clear other
     SetByteValue(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND);
+}
+
+Corpse* Player::CreateCorpseForPlayer()
+{
+	// create a corpse and place it at the player's location
+	Corpse* corpse = CreateCorpse();
+	if (!corpse)
+	{
+		sLog.outError("Error creating corpse for Player %s [%u]", GetName(), GetGUIDLow());
+		return nullptr;
+	}
+	GetMap()->Add(corpse);
+	return corpse;
 }
 
 void Player::ResurrectPlayer(float restore_percent, bool applySickness)
@@ -19597,89 +19602,98 @@ void Player::RewardSinglePlayerAtKill(Unit* pVictim)
 
 	}
 	else {
-		//PvP kill!!
-		//Implementing Runescape Death Mechanics!!
 		Player* playerVictim = (Player*)pVictim;
-
-		// If not released spirit, do it !
-		playerVictim->m_deathTimer = 0;
-		playerVictim->BuildPlayerRepop();
-		playerVictim->RepopAtGraveyard();
-		playerVictim->ResurrectPlayer(.5f);
-
-		Corpse* corpse = playerVictim->GetCorpse();
-		if (!corpse)
-			return;
-
-		// We have to convert player corpse to bones, not to be able to resurrect there
-		// SpawnCorpseBones isn't handy, 'cos it saves player while he in BG
-		Corpse* bones = sObjectAccessor.ConvertCorpseForPlayer(playerVictim->GetObjectGuid(), true);
-		if (!bones)
-			return;
+		KillAndTransferLoot(playerVictim);
+	}
+}
 
 
-		// Now we must make bones lootable, and send player loot
-		bones->SetFlag(CORPSE_FIELD_DYNAMIC_FLAGS, CORPSE_DYNFLAG_LOOTABLE);
+void Player::KillAndTransferLoot(Player* playerVictim)
+{
+	//PvP kill!!
+	//Implementing Runescape Death Mechanics!!
 
-		// We store the level of our player in the gold field
-		// We retrieve this information at Player::SendLoot()
-		bones->lootRecipient = this;
+	Corpse* corpse = playerVictim->CreateCorpseForPlayer();
 
-		Loot*& loot = bones->loot;
-		if (!loot)
+	// We have to convert player corpse to bones, not to be able to resurrect there
+	// SpawnCorpseBones isn't handy, 'cos it saves player while he in BG
+	Corpse* bones = sObjectAccessor.ConvertCorpseForPlayer(playerVictim->GetObjectGuid(), true);
+	if (!bones)
+		return;
+
+	// Now we must make bones lootable, and send player loot
+	bones->SetFlag(CORPSE_FIELD_DYNAMIC_FLAGS, CORPSE_DYNFLAG_LOOTABLE);
+
+	// We store the level of our player in the gold field
+	// We retrieve this information at Player::SendLoot()
+	bones->lootRecipient = this;
+	bones->SetObjectScale(1.5f);
+
+	Loot*& loot = bones->loot;
+	if (!loot)
+		loot = new Loot(this, bones, LOOT_INSIGNIA);
+	else
+	{
+		if (loot->GetLootType() != LOOT_INSIGNIA)
+		{
+			delete loot;
 			loot = new Loot(this, bones, LOOT_INSIGNIA);
-		else
-		{
-			if (loot->GetLootType() != LOOT_INSIGNIA)
-			{
-				delete loot;
-				loot = new Loot(this, bones, LOOT_INSIGNIA);
-			}
 		}
-
-		//Loop over everything the player is wearing, 
-		// add it to the loot, and remove it from the player
-		uint32 itemId;
-		for (int i = 0; i < INVENTORY_SLOT_ITEM_END; ++i)
-		{
-			if (Item* pItem = playerVictim->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
-			{
-				itemId = pItem->GetProto()->ItemId;
-				loot->AddItem(itemId, 1, 0, 0);
-				playerVictim->DestroyItem(INVENTORY_SLOT_BAG_0, i, true);
-			}
-		}
-
-		//Loop over all the bags, and add these items to the loot window
-		uint32 bagItemId;
-		for (int i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
-		{
-			if (Bag* pBag = (Bag*)playerVictim->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
-			{
-				for (uint32 j = 0; j < pBag->GetBagSize(); ++j)
-				{
-					if (Item* pItem = playerVictim->GetItemByPos(i, j))
-					{
-						bagItemId = pItem->GetProto()->ItemId;
-						loot->AddItem(bagItemId, pItem->GetCount(), 0, 0);
-					}
-				}
-				pBag->RemoveAllItems();
-			}
-		}
-
-		//Add all of this players gold to the loot window, and remove it from them
-		loot->SetGoldAmount(playerVictim->GetMoney());
-		playerVictim->SetMoney(0);
-		playerVictim->SaveInventoryAndGoldToDB();
-
-		//Grant a minute of immunity to the player who killed
-		CastSpell(this, 54001, TRIGGERED_OLD_TRIGGERED);
-
-		loot->ShowContentTo(this);
 	}
 
+	//Loop over everything the player is wearing, 
+	// add it to the loot, and remove it from the player
+	uint32 itemId;
+	for (int i = 0; i < INVENTORY_SLOT_ITEM_END; ++i)
+	{
+		if (Item* pItem = playerVictim->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
+		{
+			itemId = pItem->GetProto()->ItemId;
+			loot->AddItem(itemId, 1, 0, 0);
+			playerVictim->DestroyItem(INVENTORY_SLOT_BAG_0, i, true);
+		}
+	}
 
+	//Loop over all the bags, and add these items to the loot window
+	uint32 bagItemId;
+	for (int i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
+	{
+		if (Bag* pBag = (Bag*)playerVictim->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
+		{
+			for (uint32 j = 0; j < pBag->GetBagSize(); ++j)
+			{
+				if (Item* pItem = playerVictim->GetItemByPos(i, j))
+				{
+					bagItemId = pItem->GetProto()->ItemId;
+					loot->AddItem(bagItemId, pItem->GetCount(), 0, 0);
+				}
+			}
+			pBag->RemoveAllItems();
+		}
+	}
+
+	//Add all of this players gold to the loot window, and remove it from them
+	loot->SetGoldAmount(playerVictim->GetMoney());
+	playerVictim->SetMoney(0);
+	playerVictim->SaveInventoryAndGoldToDB();
+
+	//This is how many levels different we can be
+	// to get the immunity
+	//uint32 FAIR_KILL_MAX_LEVEL_DIFFERENCE = 5;
+	//uint32 minFairKillLevel = 0;
+
+	//if (getLevel() > FAIR_KILL_MAX_LEVEL_DIFFERENCE)
+	//{
+	//	minFairKillLevel = getLevel() - FAIR_KILL_MAX_LEVEL_DIFFERENCE;
+	//}
+
+	//if (playerVictim->getLevel() <= minFairKillLevel)
+	//{
+	//	//Grant a minute of immunity to the player who killed
+	//	CastSpell(this, 54001, TRIGGERED_OLD_TRIGGERED);
+	//}
+
+	loot->ShowContentTo(this);
 }
 
 void Player::RewardPlayerAndGroupAtEvent(uint32 creature_id, WorldObject* pRewardSource)
@@ -20877,9 +20891,9 @@ AreaLockStatus Player::GetAreaTriggerLockStatus(AreaTrigger const* at, uint32& m
     }
 
     // Raid Requirements
-    if (mapEntry->IsRaid() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_IGNORE_RAID))
-        if (!GetGroup() || !GetGroup()->isRaidGroup())
-            return AREA_LOCKSTATUS_RAID_LOCKED;
+    //if (mapEntry->IsRaid() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_IGNORE_RAID))
+    //    if (!GetGroup() || !GetGroup()->isRaidGroup())
+    //        return AREA_LOCKSTATUS_RAID_LOCKED;
 
     // Item Requirements: must have requiredItem OR requiredItem2, report the first one that's missing
     if (at->requiredItem)

@@ -168,14 +168,14 @@ void WorldSession::HandleMoveWorldportAckOpcode()
         GetPlayer()->m_taxi.ClearTaxiDestinations();
     }
 
-    if (mEntry->IsRaid() && mInstance)
-    {
-        if (time_t timeReset = sMapPersistentStateMgr.GetScheduler().GetResetTimeFor(mEntry->MapID))
-        {
-            uint32 timeleft = uint32(timeReset - time(nullptr));
-            GetPlayer()->SendInstanceResetWarning(mEntry->MapID, timeleft);
-        }
-    }
+    //if (mEntry->IsRaid() && mInstance)
+    //{
+    //    if (time_t timeReset = sMapPersistentStateMgr.GetScheduler().GetResetTimeFor(mEntry->MapID))
+    //    {
+    //        uint32 timeleft = uint32(timeReset - time(nullptr));
+    //        GetPlayer()->SendInstanceResetWarning(mEntry->MapID, timeleft);
+    //    }
+    //}
 
     // mount allow check
     if (!pMap->IsMountAllowed())

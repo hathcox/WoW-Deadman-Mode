@@ -1421,6 +1421,23 @@ void Group::RewardGroupAtKill(Unit* pVictim, Player* player_tap)
             // member (alive or dead) or his corpse at req. distance
             if (player_tap->IsAtGroupRewardDistance(pVictim))
                 RewardGroupAtKill_helper(player_tap, pVictim, count, PvP, group_rate, sum_level, is_dungeon, not_gray_member_with_max_level, member_with_max_level, xp);
+
+			if (PvP)
+			{
+				//If we got a player kill in a group
+				player_tap->KillAndTransferLoot((Player*)pVictim);
+			}
         }
+		else {
+			//The player who started the kill isnt there still? 
+			// For now just assign this to the first group member?
+			// loots FFA so does this matter?
+			if (PvP)
+			{
+				GroupReference* itr = GetFirstMember();
+				//If we got a player kill in a group
+				itr->getSource()->KillAndTransferLoot((Player*)pVictim);
+			}
+		}
     }
 }

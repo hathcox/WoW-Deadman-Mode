@@ -388,6 +388,7 @@ enum DeathState
     JUST_ALIVED    = 4,                                     // temporary state at resurrection, for creature auto converted to ALIVE, for player at next update call
 };
 
+
 // internal state flags for some auras and movement generators, other.
 enum UnitState
 {

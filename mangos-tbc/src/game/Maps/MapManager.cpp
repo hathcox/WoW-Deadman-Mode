@@ -98,11 +98,29 @@ Map* MapManager::CreateMap(uint32 id, const WorldObject* obj)
     Map* m;
     if (entry->Instanceable())
     {
-        MANGOS_ASSERT(obj && obj->GetTypeId() == TYPEID_PLAYER);
-        // create DungeonMap object
-        m = CreateInstance(id, (Player*)obj);
-        // Load active objects for this map
-        sObjectMgr.LoadActiveEntities(m);
+		Player* callingPlayer = (Player*)obj;
+		InstanceMap::iterator m_InstanceMapIter = m_InstanceMap.find(id);
+		//If we find a existing instance for this map id
+		//Add player to 
+		if (m_InstanceMapIter != m_InstanceMap.end())
+		{
+			//We have a existing instance
+			uint32 existingInstanceId = m_InstanceMap[id];
+			m = CreateInstance(id, (Player*)obj, existingInstanceId, true);
+		}
+		else
+		{
+			//Create new instance for us
+			MANGOS_ASSERT(obj && obj->GetTypeId() == TYPEID_PLAYER);
+			// create DungeonMap object
+			//m = CreateInstance(id, (Player*)obj);
+			uint32 newInstanceId = GenerateInstanceId();
+			m = CreateInstance(id, (Player*)obj, newInstanceId, false);
+			// Load active objects for this map
+			sObjectMgr.LoadActiveEntities(m);
+
+			m_InstanceMap.insert(std::pair<uint32, uint32>(id, newInstanceId));
+		}
     }
     else
     {
@@ -164,6 +182,11 @@ void MapManager::DeleteInstance(uint32 mapid, uint32 instanceId)
             delete pMap;
         }
     }
+	InstanceMap::iterator instanceMapItr = m_InstanceMap.find(mapid);
+	if (instanceMapItr != m_InstanceMap.end())
+	{
+		m_InstanceMap.erase(instanceMapItr);
+	}
 }
 
 void MapManager::Update(uint32 diff)
@@ -318,6 +341,58 @@ Map* MapManager::CreateInstance(uint32 id, Player* player)
     }
 
     return map;
+}
+
+///// returns a new or existing Instance
+///// in case of battlegrounds it will only return an existing map, those maps are created by bg-system
+Map* MapManager::CreateInstance(uint32 id, Player* player, uint32 instanceId, bool isCreated)
+{
+	Map* map = nullptr;
+	Map* pNewMap = nullptr;
+	uint32 NewInstanceId;                                    // instanceId of the resulting map
+	const MapEntry* entry = sMapStore.LookupEntry(id);
+
+	//if (entry->IsBattleGroundOrArena())
+	//{
+	//	// find existing bg map for player
+	//	NewInstanceId = instanceId;
+	//	MANGOS_ASSERT(NewInstanceId);
+	//	map = FindMap(id, NewInstanceId);
+	//	MANGOS_ASSERT(map);
+	//}
+	//else if (DungeonPersistentState* pSave = player->GetBoundInstanceSaveForSelfOrGroup(id))
+	//{
+	//	// solo/perm/group
+	//	NewInstanceId = pSave->GetInstanceId();
+	//	map = FindMap(id, NewInstanceId);
+	//	// it is possible that the save exists but the map doesn't
+	//	if (!map)
+	//		pNewMap = CreateDungeonMap(id, NewInstanceId, pSave->GetDifficulty(), pSave);
+	//}
+	/*else
+	{*/
+	// if no instanceId via group members or instance saves is found
+	// the instance will be created for the first time
+	NewInstanceId = instanceId;
+
+	if (!isCreated)
+	{
+		Difficulty diff = player->GetGroup() ? player->GetGroup()->GetDifficulty() : player->GetDifficulty();
+		pNewMap = CreateDungeonMap(id, NewInstanceId, diff);
+
+		// add a new map object into the registry
+		if (pNewMap)
+		{
+			i_maps[MapID(id, NewInstanceId)] = pNewMap;
+			map = pNewMap;
+		}
+	}
+	else
+	{
+		map = i_maps[MapID(id, NewInstanceId)];
+	}
+
+	return map;
 }
 
 DungeonMap* MapManager::CreateDungeonMap(uint32 id, uint32 InstanceId, Difficulty difficulty, DungeonPersistentState* save)
