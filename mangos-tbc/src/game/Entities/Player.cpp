@@ -19649,7 +19649,7 @@ void Player::KillAndTransferLoot(Player* playerVictim)
 		if (Item* pItem = playerVictim->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
 		{
 			itemId = pItem->GetProto()->ItemId;
-			loot->AddItem(itemId, 1, 0, 0);
+			loot->AddItem(itemId, pItem->GetCount(), 0, 0);
 			playerVictim->DestroyItem(INVENTORY_SLOT_BAG_0, i, true);
 		}
 	}
