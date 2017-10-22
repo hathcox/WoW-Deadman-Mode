@@ -1,0 +1,178 @@
+{% extends "user/base.html" %}
+
+{% block head %}
+<link href="/static/css/nouislider.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+
+            <div class="ibox-title">
+                <h1>High Risk Portfolio - Settings</h1>
+            </div>
+            <div class="ibox-content">  
+                <form class="form-horizontal">
+
+                    <!-- Details -->
+                    <h3>Details</h3>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Name:</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" value="High Risk Portfolio">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Description:</label>
+                        <div class="col-sm-5">
+                        <textarea cols="40" rows="5" class="form-control">This is my profile for handling certain investments.</textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Risk & Return -->
+                    <div class="hr-line-dashed"></div>
+                    <h3>Risk &amp; Return</h3>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Options:</label>
+
+                        <div class="col-sm-5">
+                            <div class="radio-list">
+                                <div>
+                                    <label>
+                                        <input type="radio" value="1" id="optionsRadios1" name="optionsRadios"> High Risk
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="radio" checked value="2" id="optionsRadios2" name="optionsRadios"> Low Risk
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="radio" value="3" id="optionsRadios3" name="optionsRadios"> Advanced
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="risk-slider-container" class="col-lg-8 well">
+                                    <p class="font-bold">Risk</p>
+                                    <div id="basic_slider" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>    
+                    
+                    <!-- Time Frame -->
+                    <div class="hr-line-dashed"></div>
+                    <h3>Time Frame</h3>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Short Term:</label>
+                        <div class="col-sm-5">
+                            <select class="form-control m-b" name="Months">
+                                <option value="1">January</option>
+                                <option value="2">Febuary</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Long Term:</label>
+                        <div class="col-sm-5">
+                            <select class="form-control m-b" name="Months">
+                                <option value="1">January</option>
+                                <option value="2">Febuary</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                    </div>
+                </div>
+
+                    <!-- Control Market -->
+                    <div class="hr-line-dashed"></div>
+                    <h3>Control Market</h3>
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-1">
+                            <select class="form-control m-b" name="Months">
+                                <option value="1">S&amp;P 500</option>
+                                <option value="2">NASDAQ</option>
+                                <option value="3">Dow Jones</option>
+                                <option value="4">US Markets</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Investment  -->
+                    <div class="hr-line-dashed"></div>
+                    <h3>Investment</h3>
+                    <div class="form-group">
+                        <div class="col-sm-offset-1 col-sm-2">
+                            <div class="input-group m-b">
+                                <span class="input-group-addon">$</span>
+                                <input type="number" placeholder="1,000" class="form-control">
+                            </div>                        
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-10">
+                            <a href="/" class="btn btn-white" type="submit">Cancel</a>
+                            <button class="btn btn-primary" type="submit">Optimize</button>
+                        </div>
+                    </div>                
+                </form><!-- End of Form -->
+            </div><!-- End of Content -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/nouislider.min.js"></script>
+
+<script type="text/javascript">
+    var rangeSlider = document.getElementById('basic_slider');
+    
+    noUiSlider.create(rangeSlider, {
+        start: [50],
+        range: {
+            'min': [ 10 ],
+            'max': [ 100 ]
+        }
+    });
+    $('#risk-slider-container').hide();
+
+    //// Enable/Disable slider on 'Advanced' selection
+    $(".radio-list").on('click', function() {
+        var checked = $("#optionsRadios3").is(':checked');
+        if (checked) {
+            $('#risk-slider-container').show();
+            rangeSlider.removeAttribute('disabled');
+        } else {
+            $('#risk-slider-container').hide();
+            rangeSlider.setAttribute('disabled', true);
+        }
+    });
+
+</script>
+{% endblock %}

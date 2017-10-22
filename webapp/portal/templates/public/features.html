@@ -1,0 +1,77 @@
+{% extends "public/base.html" %}
+
+{% block body %}
+<div class="text-center">
+    <div class="row">
+       <h1 style="font-size: 120px"><b>Features:</b></h1>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4">
+
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/d13TmJSYJd0" allowfullscreen></iframe>
+            </div>
+            <h1>A.)</h1>
+        </div>
+        <div class="col-lg-4">
+
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/d13TmJSYJd0" allowfullscreen></iframe>
+            </div>
+            <h1>B.)</h1>
+        </div>
+        <div class="col-lg-4">
+
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/d13TmJSYJd0" allowfullscreen></iframe>
+            </div>
+            <h1>C.)</h1>
+        </div>
+    </div>
+
+    <div class="row ">
+        <div class="col-lg-12 main-features">
+            <p>
+                A.) Killing another player, gives you <b>ALL</b> items they have on them (Money, Equipment, Items in Bags)
+            </p>
+             <p>
+                 B.) All Instances are <b>SHARED</b>. When you enter a dungeon/raid, there is a chance players are already inside!
+            </p>
+             <p>
+                C.) All items are tradeable, and sellable on the Auction House!
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="well col-lg-10 col-lg-offset-1">
+            <a href="#">
+                <h3 data-toggle="collapse" data-target="#demo">Notes, and Other Changes:</h3>
+            </a>
+            <div id="demo" class="collapse">
+                <p>FFA PVP - Players on the same factions can attack each other.</p>
+                <p>5x Money - 5x Experience</p>
+                <p>City Guards are Buffed, to stop griefing.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-offset-3 col-lg-6">
+            <div class="row">
+                <div class="col-lg-6 col-sm-6 col-xs-12">
+                    <a href="/splash/">
+                        <button class="btn btn-block btn-success">Home</button>
+                    </a>
+                </div>
+                 <div class="col-lg-6 col-sm-6  col-xs-12">
+                    <a href="/register">
+                        <button class="btn btn-block btn-danger">Register</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

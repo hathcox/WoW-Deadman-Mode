@@ -1,0 +1,120 @@
+{% extends "public/base.html" %}
+
+{% block body %}
+<div class="text-center">
+    <div class="row">
+       <h1 style="font-size: 120px"><b>Register:</b></h1>
+    </div>
+
+    <form role="form" method="POST" action="/register">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-lg-4 col-lg-offset-2">
+                <h1><b>Username:</b></h1>
+            </div>
+            <div class="col-lg-2 col-lg-offset-2">
+                <br>
+                <input class="form-control" name="username" type="text" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-lg-offset-2">
+                <h1><b>Password:</b></h1>
+            </div>
+            <div class="col-lg-2 col-lg-offset-2">
+                <br>
+                <input class="form-control" name="password" type="password" />
+            </div>
+        </div>
+
+        {% if errors %}
+            <div class="row">
+                <div class="col-lg-offset-3 col-lg-6 form-errors">
+                    {% for error in errors %}
+                        <div class="alert alert-danger">
+                            {{error}}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if success %}
+            <div class="col-lg-offset-3 col-lg-6">
+                <div class="alert alert-success">
+                    New Account Registered Succesfully!
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-lg-offset-3 col-lg-6">
+                <div class="row">
+                    <br />
+                    <br />
+                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                        <button type="submit" class="btn btn-lg btn-block btn-success">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+       <h1 style="font-size: 120px"><b>Connection Information:</b></h1>
+
+        <div class="col-lg-12">
+            <div class="row">
+                <h1>World of Warcraft Client:</h1>
+                <a data-toggle="collapse" data-target="#wow-client-info" href="#">
+                    <div>
+                        Click for more information
+                    </div>
+                </a>
+
+                <div id="wow-client-info"  class="collapse well col-lg-offset-4 col-lg-4">
+                    <a  href="/static/img/wow-client.torrent">
+                        <button class="btn btn-block btn-success" >Download Torrent</button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <h1>Realmlist.wtf</h1>
+                <a data-toggle="collapse" data-target="#wow-realm-info" href="#">
+                    <div class="">
+                        Click for more information
+                    </div>
+                </a>
+
+               <div id="wow-realm-info"  class="collapse well col-lg-offset-4 col-lg-4">
+                    set realmlist 45.79.195.81
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-offset-3 col-lg-6">
+            <div class="row">
+                <br />
+                <br />
+                <br />
+                <div class="col-lg-6 col-sm-6 col-xs-12">
+                    <a href="/splash/">
+                        <button class="btn btn-block btn-success">Home</button>
+                    </a>
+                </div>
+                 <div class="col-lg-6 col-sm-6  col-xs-12">
+                    <a href="/features">
+                        <button class="btn btn-block btn-danger">Features</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+.single-pane {
+	color:white;
+}
+.form-errors {
+	color:#FE2E2E;
+	font-weight:300;
+}
+.headline {
+	padding-top:2px;
+	padding-left: 35px;
+	padding-bottom: 2px;
+	font-size: 18px;
+}
+.market {
+	font-size: 10px;
+	top:10px;
+}
+.headline-section {
+	padding:5px;
+}
+.center-logo {
+	margin-right: 1rem;
+}
+.chart-filter {
+	margin-bottom: 1rem;
+}
+
+.faction-symbol {
+	height:45px;
+	width:35px;
+}
+.well {
+	background-color: #272725 !important;
+    border: 1px solid #191717 !important;
+}
+.main-features {
+	font-size: x-large;
+
+}
+
+input {
+	color:black !important;
+	font-size: large;
+}

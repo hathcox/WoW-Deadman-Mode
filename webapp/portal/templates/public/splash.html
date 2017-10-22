@@ -1,0 +1,52 @@
+{% extends "public/base.html" %}
+
+{% block body %}
+<div class="text-center">
+    <div class="row">
+        <div class="col-lg-12">
+            <img class="img-responsive" style="margin: auto;" src="/static/img/wow-dmm.png" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-xs-6">
+            <h1>Version: Burning Crusade</h1>
+            <h2>2.4.3</h2>
+        </div>
+        <div class="col-lg-6 col-xs-6">
+            <h1>Players Online</h1>
+            <h2>
+                <span>
+                    <img class="faction-symbol" src="/static/img/alliance_symbol.png" />
+                </span>
+                <span>
+                   <b>+</b>
+                </span>
+                <span class="faction-symbol">
+                    <img class="faction-symbol" src="/static/img/horde_symbol.png" />
+                </span>
+                <span>
+                   &nbsp;&nbsp; {{ online_player_count }}
+                </span>
+            </h2>
+            <br />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-offset-3 col-lg-6">
+            <div class="row">
+                <div class="col-lg-6 col-sm-6 col-xs-12">
+                    <a href="/features/">
+                        <button class="btn btn-block btn-success">Features</button>
+                    </a>
+                </div>
+                 <div class="col-lg-6 col-sm-6  col-xs-12">
+                    <a href="/register">
+                        <button class="btn btn-block btn-danger">Register</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

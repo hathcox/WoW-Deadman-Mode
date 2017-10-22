@@ -1,0 +1,237 @@
+{% extends "user/base.html" %}
+
+{% block head %}
+<link href="/static/css/morris.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="text-center m-t-lg">
+            <h1>
+                Welcome the <b>Dashboard</b>
+            </h1>
+
+            <div class="row">
+                <div id="tile-one" class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>My Portfolios</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content" style="display: block;">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <table class="table table-hover margin bottom">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th class="text-center">Stocks</th>
+                                            <th class="text-center">Current Value</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>US Markets Portfolio</td>
+                                            <td class="text-center"><b>14</b> Tickers in <b>4</b> Markets</td>
+                                            <td class="text-center small">1604$ <span style="color:green">(+2.8%)</span></td>
+                                            <td class="text-center">
+                                                <a class="btn btn-default" href="/user/portfolio_settings"><i class="fa fa-gear"></i></a>
+                                                <a class="btn btn-primary" href="/user/portfolio">Select</a>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>High Risk European Portfolio</td>
+                                            <td class="text-center"><b>38</b> Tickers in <b>5</b> Markets</td>
+                                            <td class="text-center small">38627$ <span style="color:red">(-1.3%)</span></td>
+                                            <td class="text-center">
+                                                <a class="btn btn-default" href="/user/portfolio_settings"><i class="fa fa-gear"></i></a>
+                                                <a class="btn btn-primary" href="/user/portfolio">Select</a>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>Low Risk Long Term Portfolio</td>
+                                            <td class="text-center"><b>2</b> Tickers in <b>1</b> Markets</td>
+                                            <td class="text-center small">9745$ <span style="color:green">(+15.4%)</span></td>
+                                            <td class="text-center">
+                                                <a class="btn btn-default" href="/user/portfolio_settings"><i class="fa fa-gear"></i></a>
+                                                <a class="btn btn-primary" href="/user/portfolio">Select</a>
+                                            </td>
+
+                                        </tr>
+                                       
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- End Tile One -->
+
+
+                <div id="tile-two" class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Market Charts</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content" style="display: block;">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="morris-line-chart" style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End Tile Two -->
+            </div>
+            <div class="row">
+                <div id="tile-three" class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Headlines</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content" style="display: block;">
+                            <div class="row">
+                                <div class="col-lg-12">
+
+                                    <div id="yahoo-headline-section" class="col-lg-12 row text-left headline-section">
+                                        <small class="">From Yahoo Finance</small>
+                                        <div class="row headline">
+                                            <b>YHOO</b> <span class="market">(NASDAQ)</span> - 
+                                            <a href="#">Yahoo, Google Back Together in Search Deal</a>
+                                        </div>
+                                        <div class="row headline">
+                                            <b>GOOGL</b> <span class="market">(NASDAQ)</span> - 
+                                            <a href="#">Alphabet’s Google to Try Again With Low-Cost Smartphone for India</a>
+                                        </div>
+                                        <div class="row headline">
+                                            <b>BABA</b> <span class="market">(NYSE)</span> - 
+                                            <a class="text-align-right" href="#">Alibaba Said to Be Discussing $80 Million Investment in Boxed</a>
+                                        </div>
+                                        <div class="row headline">
+                                            <b>AAPL</b> <span class="market">(NASDAQ)</span> - 
+                                            <a href="#">Dropbox tries to reinvent cloud-storage market</a>
+                                        </div>
+                                        <div class="row headline">
+                                            <b>M</b> <span class="market">(NYSE)</span> - 
+                                            <a href="#">Marbles: The Brain Store Joins Macy’s Holiday Arcade This Season</a>
+                                        </div>
+                                    </div>
+
+                                    <div id="cnbc-headline-section" class="col-lg-12 row text-left headline-section">
+                                        <small>From CNBC</small>
+                                        <div class="row headline">
+                                            <b>AXP</b> <span class="market">(NYSE)</span> - 
+                                            <a href="#">Visa to buy Visa Europe in $18.2B deal</a>
+                                        </div>
+                                        <div class="row headline">
+                                            <b>BA</b> <span class="market">(NYSE)</span> - 
+                                            <a href="#">Boeing to pay $57 mln to settle 401(k) lawsuit</a>
+                                        </div>
+                                        <div class="row headline">
+                                            <b>CSCO</b> <span class="market">(NASDAQ)</span> - 
+                                            <a href="#">Cisco buys Lancope for $452 million in latest security deal</a>
+                                        </div>
+                                        <div class="row headline">
+                                            <b>GE</b> <span class="market">(NYSE)</span> - 
+                                            <a href="#">GE completes $10.6 billion acquisition Alstom division</a>
+                                        </div>
+                                        <div class="row headline">
+                                            <b>IBM</b> <span class="market">(NYSE)</span> - 
+                                            <a href="#">IBM CEO: What’s behind our company's growth</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tile-four" class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>FSAI Youtube Channel</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content" style="display: block;">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <iframe width="640" height="360" src="https://www.youtube.com/embed/xkH-vR2IR_E" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End tile four -->
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/morris.js"></script>
+<script src="/static/js/raphael.js"></script>
+
+<script type="text/javascript">
+$(function() {
+    Morris.Line({
+        element: 'morris-line-chart',
+        data: [{ y: '2006', a: 100, b: 90 },
+            { y: '2007', a: 75, b: 65 },
+            { y: '2008', a: 50, b: 40 },
+            { y: '2009', a: 75, b: 65 },
+            { y: '2010', a: 50, b: 40 },
+            { y: '2011', a: 75, b: 65 },
+            { y: '2012', a: 100, b: 90 } ],
+        xkey: 'y',
+        ykeys: ['a', 'b'],
+        labels: ['Series A', 'Series B'],
+        hideHover: 'auto',
+        resize: true,
+        lineColors: ['#54cdb4','#1ab394'],
+    });
+});
+</script>
+{% endblock %}
